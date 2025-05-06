@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario con validación y Bootstrap</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background: #111;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .luces-circulares {
+            position: absolute;
+            width: 300px;
+            height: 290px;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .linea {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            pointer-events: none;
+        }
+
+        .linea::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid;
+            border-color: transparent transparent rgb(255, 255, 255) transparent;
+            animation: girar 4s linear infinite;
+        }
+
+        .linea:nth-child(2)::before {
+            border-color: transparent transparent rgb(255, 32, 62) transparent;
+            animation-delay: 1s;
+        }
+
+        .linea:nth-child(3)::before {
+            border-color: transparent transparent #0f0;
+            animation-delay: 2s;
+        }
+        .linea:nth-child(4)::before {
+            border-color: transparent transparent rgb(0, 184, 184);
+            animation-delay: 3s;
+        }
+        .linea:nth-child(5)::before {
+            border-color: transparent transparent rgb(251, 255, 0);
+            animation-delay: 4s;
+        }
+
+        @keyframes girar {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1.05);
+            }
+        }
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .contenedor-formulario {
+            position: relative;
+            z-index: 1;
+            background-color: transparent;
+            padding: 30px;
+            border-radius: 20px;
+            width: 300px;
+            color: white;
+            box-shadow: 0 0 30px rgba(0, 255, 200, 0.2);
+            animation: aparecer 2s ease-out;
+        }
+
+        .contenedor-formulario h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 25px;
+            color: #a2f5e1;
+            text-shadow: 0 0 10px #00ffc3, 0 0 20px #008bcc;
+        }
+
+        input,
+        select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #66c9b2;
+            background-color: transparent;
+            color: white;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23ccc' d='M2 0L0 2h4L2 0zM2 5L0 3h4L2 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+            padding-right: 30px;
+        }
+
+        select option {
+            background-color: #111;
+            color: white;
+        }
+
+        .campo-genero {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #00ffc3;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #00cc99;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+        
+        /* Estilo para la tabla de registros */
+        .contenedor-tabla {
+            position: relative;
+            z-index: 1;
+            margin-top: 30px;
+            width: 90%;
+            max-width: 900px;
+            color: white;
+            box-shadow: 0 0 30px rgba(0, 255, 200, 0.2);
+            border-radius: 20px;
+            padding: 20px;
+            animation: aparecer 1s ease-out;
+        }
+        
+        .contenedor-tabla h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #a2f5e1;
+            text-shadow: 0 0 10px #00ffc3, 0 0 20px #008bcc;
+        }
+        
+        .tabla-registros {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .tabla-registros th {
+            background-color: rgba(0, 255, 195, 0.2);
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #66c9b2;
+        }
+        
+        .tabla-registros td {
+            padding: 8px;
+            border: 1px solid #66c9b2;
+            text-align: center;
+        }
+        
+        .tabla-registros tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Estilos para los botones de acción */
+        .btn-accion {
+            padding: 5px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .btn-editar {
+            background-color: #FFC107;
+            color: #111;
+        }
+        
+        .btn-editar:hover {
+            background-color: #e0a800;
+            box-shadow: 0 0 8px #FFC107;
+        }
+        
+        .btn-eliminar {
+            background-color: #DC3545;
+            color: white;
+        }
+        
+        .btn-eliminar:hover {
+            background-color: #c82333;
+            box-shadow: 0 0 8px #DC3545;
+        }
+        
+        /* Estilos para el modal de edición */
+        .modal-contenido {
+            background-color: #222;
+            border-radius: 15px;
+            border: 1px solid #66c9b2;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.4);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #66c9b2;
+        }
+        
+        .modal-header .btn-close {
+            color: white;
+            filter: invert(1) hue-rotate(180deg);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #66c9b2;
+        }
+        
+        .form-control {
+            background-color: #333;
+            border: 1px solid #66c9b2;
+            color: white;
+        }
+        
+        .form-control:focus {
+            background-color: #444;
+            color: white;
+            border-color: #00ffc3;
+            box-shadow: 0 0 0 0.25rem rgba(0, 255, 195, 0.25);
+        }
+        
+        .form-select {
+            background-color: #333;
+            border: 1px solid #66c9b2;
+            color: white;
+        }
+        
+        .form-select:focus {
+            background-color: #444;
+            color: white;
+            border-color: #00ffc3;
+            box-shadow: 0 0 0 0.25rem rgba(0, 255, 195, 0.25);
+        }
+        .form-check-label {
+            color: white !important;
+        }
+        .form-label {
+        color: white !important;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="inicio" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        <h1>Bienvenido</h1>
+        <button onclick="mostrarFormulario()">Ingresar al formulario</button>
+      </div>
+      
+      <div id="contenidoFormulario" style="display: none;">
+           
+
+    <!-- Círculo de luces animadas -->
+    <div class="luces-circulares">
+        <div class="linea"></div>
+        <div class="linea"></div>
+        <div class="linea"></div>
+        <div class="linea"></div>
+        <div class="linea"></div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="contenedor-formulario">
+        <h2>REGISTRARSE</h2>
+        <div id="alerta"></div>
+
+        <form id="formularioRegistro">
+            <input type="text" name="nombres" placeholder="Nombres">
+            <input type="text" name="apellidos" placeholder="Apellidos">
+            <input type="tel" name="telefono" placeholder="Teléfono" pattern="[0-9]{10}">
+
+            <select name="tipoDocumento" id="tipoDocumento">
+                <option disabled selected value="">Tipo de documento</option>
+                <option value="cc">Cédula de Ciudadanía</option>
+                <option value="ti">Tarjeta de Identidad</option>
+                <option value="ce">Cédula de Extranjería</option>
+                <option value="pp">Pasaporte</option>
+                <option value="nit">NIT</option>
+            </select>
+
+            <input type="text" name="documento" placeholder="Documento" pattern="[0-9]{8,12}">
+            <input type="email" name="email" placeholder="Correo electrónico">
+            <input type="date" name="fecha">
+
+            <div class="campo-genero">
+                <label>Género:</label><br>
+                <input type="radio" name="genero" value="masculino" id="masc"><label for="masc"> Masculino</label>
+                <input type="radio" name="genero" value="femenino" id="fem"><label for="fem"> Femenino</label>
+            </div>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    
+    <!-- Contenedor para la tabla de registros -->
+    <div id="contenedor-tabla" class="contenedor-tabla" style="display: none;">
+        <h3>REGISTROS</h3>
+        <div class="table-responsive">
+            <table class="tabla-registros">
+                <thead>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Teléfono</th>
+                        <th>Tipo Documento</th>
+                        <th>Documento</th>
+                        <th>Email</th>
+                        <th>Fecha</th>
+                        <th>Género</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-datos">
+                    <!-- Aquí se agregan las filas dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Modal para editar registro -->
+    <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-contenido">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarLabel" style="color: #a2f5e1;">Editar Registro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditar">
+                        <input type="hidden" id="edit-index">
+                        <div class="mb-3">
+                            <label for="edit-nombres" class="form-label">Nombres</label>
+                            <input type="text" class="form-control" id="edit-nombres" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-apellidos" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" id="edit-apellidos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="edit-telefono" pattern="[0-9]{10}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-tipoDocumento" class="form-label">Tipo de Documento</label>
+                            <select class="form-select" id="edit-tipoDocumento" required>
+                                <option value="cc">Cédula de Ciudadanía</option>
+                                <option value="ti">Tarjeta de Identidad</option>
+                                <option value="ce">Cédula de Extranjería</option>
+                                <option value="pp">Pasaporte</option>
+                                <option value="nit">NIT</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-documento" class="form-label">Documento</label>
+                            <input type="text" class="form-control" id="edit-documento" pattern="[0-9]{8,12}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="edit-email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-fecha" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="edit-fecha" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Género</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="edit-genero" id="edit-masc" value="masculino" required>
+                                    <label class="form-check-label" for="edit-masc">Masculino</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="edit-genero" id="edit-fem" value="femenino">
+                                    <label class="form-check-label" for="edit-fem">Femenino</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-accion" style="background-color: #00ffc3; color: #111;" id="btn-guardar-edicion">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmación para eliminar -->
+    <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-labelledby="modalConfirmarEliminarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-contenido">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmarEliminarLabel" style="color: #a2f5e1;">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este registro?</p>
+                    <p><strong>Nombre:</strong> <span id="eliminar-nombre"></span></p>
+                    <p><strong>Documento:</strong> <span id="eliminar-documento"></span></p>
+                    <input type="hidden" id="eliminar-index">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btn-confirmar-eliminar">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Validación con alertas y creación de tabla -->
+    <script>
+        const usuarios = [];
+        
+        // Inicializar los modales una vez que se carga el DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar event listener para el botón de guardar edición
+            document.getElementById('btn-guardar-edicion').addEventListener('click', guardarEdicion);
+            
+            // Agregar event listener para el botón de confirmar eliminación
+            document.getElementById('btn-confirmar-eliminar').addEventListener('click', eliminarRegistro);
+        });
+        
+        // Función para convertir tipo de documento a texto legible
+        function getTipoDocumentoTexto(tipo) {
+            const tipos = {
+                'cc': 'Cédula de Ciudadanía',
+                'ti': 'Tarjeta de Identidad',
+                'ce': 'Cédula de Extranjería',
+                'pp': 'Pasaporte',
+                'nit': 'NIT'
+            };
+            return tipos[tipo] || tipo;
+        }
+        
+        // Función para formatear la fecha (YYYY-MM-DD a DD/MM/YYYY)
+        function formatearFecha(fecha) {
+            if (!fecha) return '';
+            const partes = fecha.split('-');
+            if (partes.length !== 3) return fecha;
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+        
+        // Función para actualizar la tabla con todos los usuarios
+        function actualizarTabla() {
+            const tablaDatos = document.getElementById("tabla-datos");
+            tablaDatos.innerHTML = '';
+            
+            if (usuarios.length > 0) {
+                document.getElementById("contenedor-tabla").style.display = "block";
+                
+                usuarios.forEach((usuario, index) => {
+                    const fila = document.createElement('tr');
+                    
+                    fila.innerHTML = `
+                        <td>${usuario.nombres}</td>
+                        <td>${usuario.apellidos}</td>
+                        <td>${usuario.telefono}</td>
+                        <td>${getTipoDocumentoTexto(usuario.tipoDocumento)}</td>
+                        <td>${usuario.documento}</td>
+                        <td>${usuario.email}</td>
+                        <td>${formatearFecha(usuario.fecha)}</td>
+                        <td>${usuario.genero === 'masculino' ? 'Masculino' : 'Femenino'}</td>
+                        <td>
+                            <button class="btn-accion btn-editar" data-index="${index}">Editar</button>
+                            <button class="btn-accion btn-eliminar" data-index="${index}">Eliminar</button>
+                        </td>
+                    `;
+                    
+                    tablaDatos.appendChild(fila);
+                });
+                
+                // Agregar event listeners para los botones de editar y eliminar
+                document.querySelectorAll('.btn-editar').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        abrirModalEditar(parseInt(this.getAttribute('data-index')));
+                    });
+                });
+                
+                document.querySelectorAll('.btn-eliminar').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        abrirModalEliminar(parseInt(this.getAttribute('data-index')));
+                    });
+                });
+            }
+        }
+        
+        // Función para abrir el modal de edición y llenar con los datos del usuario
+        function abrirModalEditar(index) {
+            const usuario = usuarios[index];
+            
+            // Llenar el formulario con los datos actuales
+            document.getElementById('edit-index').value = index;
+            document.getElementById('edit-nombres').value = usuario.nombres;
+            document.getElementById('edit-apellidos').value = usuario.apellidos;
+            document.getElementById('edit-telefono').value = usuario.telefono;
+            document.getElementById('edit-tipoDocumento').value = usuario.tipoDocumento;
+            document.getElementById('edit-documento').value = usuario.documento;
+            document.getElementById('edit-email').value = usuario.email;
+            document.getElementById('edit-fecha').value = usuario.fecha;
+            
+            // Para el género (que son radio buttons)
+            if(usuario.genero === 'masculino') {
+                document.getElementById('edit-masc').checked = true;
+            } else {
+                document.getElementById('edit-fem').checked = true;
+            }
+            
+            // Abrir el modal
+            const modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modalEditar.show();
+        }
+        
+        // Función para abrir el modal de confirmación de eliminación
+        function abrirModalEliminar(index) {
+            const usuario = usuarios[index];
+            
+            // Mostrar información para confirmar
+            document.getElementById('eliminar-index').value = index;
+            document.getElementById('eliminar-nombre').textContent = `${usuario.nombres} ${usuario.apellidos}`;
+            document.getElementById('eliminar-documento').textContent = `${getTipoDocumentoTexto(usuario.tipoDocumento)}: ${usuario.documento}`;
+            
+            // Abrir el modal
+            const modalEliminar = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar'));
+            modalEliminar.show();
+        }
+        
+        // Función para guardar los cambios después de editar
+        function guardarEdicion() {
+            const index = parseInt(document.getElementById('edit-index').value);
+            
+            // Obtener los valores del formulario de edición
+            const nombres = document.getElementById('edit-nombres').value.trim();
+            const apellidos = document.getElementById('edit-apellidos').value.trim();
+            const telefono = document.getElementById('edit-telefono').value.trim();
+            const tipoDocumento = document.getElementById('edit-tipoDocumento').value;
+            const documento = document.getElementById('edit-documento').value.trim();
+            const email = document.getElementById('edit-email').value.trim();
+            const fecha = document.getElementById('edit-fecha').value;
+            
+            // Para el género
+            let genero = '';
+            if(document.getElementById('edit-masc').checked) {
+                genero = 'masculino';
+            } else if(document.getElementById('edit-fem').checked) {
+                genero = 'femenino';
+            }
+            
+            // Validar que todos los campos estén completos
+            if (!nombres || !apellidos || !telefono || !tipoDocumento || !documento || !email || !fecha || !genero) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+            
+            // Actualizar el objeto en el array
+            usuarios[index] = {
+                nombres,
+                apellidos,
+                telefono,
+                tipoDocumento,
+                documento,
+                email,
+                fecha,
+                genero
+            };
+            
+            // Cerrar el modal
+            const modalEditar = bootstrap.Modal.getInstance(document.getElementById('modalEditar'));
+            modalEditar.hide();
+            
+            // Actualizar la tabla
+            actualizarTabla();
+            
+            // Mostrar mensaje de éxito
+            document.getElementById("alerta").innerHTML = `
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Correcto:</strong> Registro actualizado exitosamente.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+              </div>
+            `;
+        }
+        
+        // Función para eliminar un registro
+        function eliminarRegistro() {
+            const index = parseInt(document.getElementById('eliminar-index').value);
+            
+            // Eliminar el usuario del array
+            usuarios.splice(index, 1);
+            
+            // Cerrar el modal
+            const modalEliminar = bootstrap.Modal.getInstance(document.getElementById('modalConfirmarEliminar'));
+            modalEliminar.hide();
+            
+            // Ocultar la tabla si no hay registros
+            if (usuarios.length === 0) {
+                document.getElementById("contenedor-tabla").style.display = "none";
+            }
+            
+            // Actualizar la tabla
+            actualizarTabla();
+            
+            // Mostrar mensaje de éxito
+            document.getElementById("alerta").innerHTML = `
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Correcto:</strong> Registro eliminado exitosamente.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+              </div>
+            `;
+        }
+      
+        document.getElementById("formularioRegistro").addEventListener("submit", function (e) {
+          e.preventDefault();
+      
+          const form = e.target;
+          const alerta = document.getElementById("alerta");
+          alerta.innerHTML = "";
+      
+          const nombres = form.nombres.value.trim();
+          const apellidos = form.apellidos.value.trim();
+          const telefono = form.telefono.value.trim();
+          const tipoDocumento = form.tipoDocumento.value;
+          const documento = form.documento.value.trim();
+          const email = form.email.value.trim();
+          const fecha = form.fecha.value;
+          const genero = form.genero.value;
+      
+          if (!nombres || !apellidos || !telefono || !tipoDocumento || !documento || !email || !fecha || !genero) {
+            alerta.innerHTML = `
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> Por favor completa todos los campos del formulario.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+              </div>
+            `;
+          } else {
+            alerta.innerHTML = `
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Correcto:</strong> Formulario enviado exitosamente.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+              </div>
+            `;
+      
+            // Crear objeto con los datos del formulario
+            const nuevoUsuario = {
+              nombres,
+              apellidos,
+              telefono,
+              tipoDocumento,
+              documento,
+              email,
+              fecha,
+              genero
+            };
+      
+            // Agregar el objeto al array
+            usuarios.push(nuevoUsuario);
+            
+            // Actualizar la tabla con los datos
+            actualizarTabla();
+      
+            // Mostrar todos los objetos en consola
+            console.log("Usuarios registrados:", usuarios);
+      
+            form.reset(); // Limpiar formulario
+          }
+        });
+       
+  function mostrarFormulario() {
+    document.getElementById('inicio').style.display = 'none';
+    document.getElementById('contenidoFormulario').style.display = 'block';
+  }
+      </script>
+
+</body>
+</html>
+      </div>
+   
