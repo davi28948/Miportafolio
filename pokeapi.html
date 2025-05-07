@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokédex Aleatoria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background: #f8f8ff;
+      transition: background 1s ease;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px 20px 15px;
+      min-height: 100vh;
+    }
+
+    .card {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.3);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 40px;
+      width: 640px;
+      animation: fadeIn 1s ease;
+    }
+
+    .card-left,
+    .card-right {
+      width: 48%;
+    }
+
+    .pokemon-name {
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+      animation: neonPulse 2s infinite;
+    }
+
+    @keyframes neonPulse {
+
+      0%,
+      100% {
+        text-shadow: 0 0 8px var(--neon), 0 0 12px var(--neon), 0 0 20px var(--neon);
+      }
+
+      50% {
+        text-shadow: 0 0 12px var(--neon), 0 0 18px var(--neon), 0 0 30px var(--neon);
+      }
+    }
+
+    .pokemon-image-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 20px;
+      z-index: 2;
+    }
+
+    .pokemon-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      position: relative;
+      z-index: 3;
+      border-radius: 20px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .energy-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 80%);
+      transform: translate(-50%, -50%);
+      animation: pulse 2s infinite ease-in-out;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.3;
+      }
+    }
+
+    .info-line {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin: 6px 0;
+    }
+
+    .info-box {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 15px;
+      padding: 10px 15px;
+      margin-top: 15px;
+    }
+
+    .info-box .label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+      text-align: center;
+      color: #222;
+    }
+
+    .info-box span {
+      display: inline-block;
+      margin: 3px 5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: #eee;
+    }
+
+    .stat-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 20px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      text-align: right;
+      padding-right: 5px;
+      color: #fff;
+      font-size: 12px;
+      line-height: 20px;
+      transition: width 1s ease-in-out;
+    }
+
+
+
+    .button-refresh:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      150% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes electricFlash {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0px rgb(255, 255, 255);
+      }
+
+      50% {
+        box-shadow: 0 0 20px 10px rgb(255, 255, 255);
+      }
+    }
+
+
+    .pokemon-image-wrapper {
+      animation: electricFlash 1.2s ease-in-out;
+    }
+
+
+    .pokemon-image {
+      animation: fadeIn 1s ease;
+    }
+
+
+    .progress-bar {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 768px) {
+      .card {
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
+      }
+
+      .card-left,
+      .card-right {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .pokemon-name {
+        font-size: 1.5rem;
+      }
+
+      .pokemon-image-wrapper {
+        width: 180px;
+        height: 180px;
+      }
+
+      .progress-bar {
+        font-size: 10px;
+        padding-right: 2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" id="pokedex"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const typeColorMap = {
+      normal: '#A8A77A', fire: '#EE8130', water: '#6390F0',
+      electric: '#F7D02C', grass: '#7AC74C', ice: '#96D9D6',
+      fighting: '#C22E28', poison: '#A33EA1', ground: '#E2BF65',
+      flying: '#A98FF3', psychic: '#F95587', bug: '#A6B91A',
+      rock: '#B6A136', ghost: '#735797', dragon: '#6F35FC',
+      dark: '#705746', steel: '#B7B7CE', fairy: '#D685AD'
+    };
+
+    async function getWeaknesses(types) {
+      const weaknessesSet = new Set();
+      for (const type of types) {
+        const res = await axios.get(`https://pokeapi.co/api/v2/type/${type}`);
+        res.data.damage_relations.double_damage_from.forEach(d => weaknessesSet.add(d.name));
+      }
+      return Array.from(weaknessesSet);
+    }
+
+    async function loadPokemon() {
+      const container = document.getElementById('pokedex');
+      container.innerHTML = 'Cargando...';
+
+      try {
+        const randomId = Math.floor(Math.random() * 898) + 1;
+        const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
+        const pokemon = res.data;
+
+        const imageUrl = pokemon.sprites.other['official-artwork'].front_default;
+        const types = pokemon.types.map(t => t.type.name);
+        const weaknesses = await getWeaknesses(types);
+        const abilities = pokemon.abilities.map(a => a.ability.name);
+
+        const typeColors = types.map(t => typeColorMap[t] || '#ccc');
+        const mainColor = typeColorMap[types[0]] || '#fff';
+
+        document.body.style.background = typeColors.length === 1
+          ? typeColors[0]
+          : `linear-gradient(to right, ${typeColors.join(', ')})`;
+
+        const statsHTML = pokemon.stats.map(stat => {
+          const percent = (stat.base_stat / 250) * 100;
+          return `
+            <div class="stat-label">
+              <span>${stat.stat.name.toUpperCase()}</span>
+              <span>${stat.base_stat}/250</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: ${percent}%">${Math.round(percent)}%</div>
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML = ` 
+          <div class="card">
+            <div class="card-left">
+              <div class="pokemon-name">${pokemon.name.toUpperCase()}</div>
+              <div class="pokemon-image-wrapper">
+                <div class="energy-effect" style="background: radial-gradient(circle, ${mainColor}33 0%, transparent 80%);"></div>
+                <img class="pokemon-image" src="${imageUrl}" alt="${pokemon.name}">
+              </div>
+
+              <div class="info-box">
+                <span class="label">Tipo:</span>
+                ${types.map(t => `<span style="background:${typeColorMap[t]}; color: #fff;">${t}</span>`).join('')}
+              </div>
+
+              <div class="info-line">ID: #${pokemon.id}</div>
+              <div class="info-line">Altura: ${(pokemon.height / 10).toFixed(2)} m</div>
+              <div class="info-line">Peso: ${(pokemon.weight / 10).toFixed(2)} kg</div>
+            </div>
+            <div class="card-right">
+              <div class="info-box">
+                <span class="label">Debilidades:</span>
+                ${weaknesses.map(t => `<span style="background:${typeColorMap[t] || '#888'}; color: #fff;">${t}</span>`).join('')}
+              </div>
+
+              <div class="info-box">
+                <span class="label">Habilidades:</span>
+                ${abilities.map(a => `<span>${a}</span>`).join('')}
+              </div>
+
+              <div style="margin-top:20px;">${statsHTML}</div>
+            </div>
+          </div>
+        `;
+
+        const nameEl = document.querySelector('.pokemon-name');
+        nameEl.style.setProperty('--neon', mainColor);
+
+      } catch (err) {
+        container.innerHTML = '<div style="color:red;">Error al cargar Pokémon</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPokemon);
+  </script>
+</body>
+
+</html>
