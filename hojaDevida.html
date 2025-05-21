@@ -89,7 +89,7 @@
         }
 
         .content {
-            padding: 20px 0px 0px 80px;
+            padding: 20px 10px 0px 80px;
             width: 70%;
         }
 
@@ -169,13 +169,12 @@
 
         /*Moviles menores a 600px*/
         @media (max-width: 600px) {
-            body{
+            body {
                 width: 100%;
             }
 
             .container {
                 flex-direction: column;
-
             }
 
             .sidebar {
@@ -188,7 +187,7 @@
 
             .content {
                 width: 100%;
-                padding: 0px 0px 20px 5px;
+                padding: 0px 0px 20px 15px;
             }
 
             .header {
@@ -198,13 +197,9 @@
                 padding: 10px 25px 20px 15px;
             }
 
-            .headerTxt {
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 5px;
-            }
+            .headerTxt {}
 
-            .headerTxt i{
+            .headerTxt i {
                 margin-bottom: 5px;
             }
 
@@ -212,16 +207,12 @@
                 font-size: 12px;
             }
 
-            .headerTxt .txt{
+            .headerTxt .txt {
                 font-size: 9px;
             }
 
             .bottomCV {
-                margin: 10px;
-                /*width: 100%;*/
-                /*display: flex;
-                justify-content: center;
-                align-items: center;*/
+                margin-top: 20px
             }
 
             .bottomCV button {
@@ -268,8 +259,36 @@
                 order: -1;
             }
 
-            .content p{
+            .content p {
                 font-size: 14px;
+            }
+        }
+
+        @media (max-width: 425px) {
+            .headerTxt {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                text-align: left;
+            }
+
+            .headerTxt i {
+                padding-left: 0;
+            }
+
+            .headerTxt h5 {
+                font-size: 12px;
+            }
+
+            .headerTxt .txt {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 330px) {
+            .headerTxt {
+                flex-direction: column;
             }
         }
     </style>
