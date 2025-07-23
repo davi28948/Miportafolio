@@ -91,49 +91,49 @@
           />
           <img
             v-show="partesVisibles.includes('torso')"
-            src="/public/images/torsoMario.png"
+            src="../public/images/torsoMario.png"
             alt="Torso de Mario"
             style="width: 90px; height: 90px; object-fit: cover"
             class="torso"
           />
           <img
             v-show="partesVisibles.includes('brazoDerecho')"
-            src="/public/images/brazoDerecho.png"
+            src="../public/images/brazoDerecho.png"
             alt="Brazo Derecho de Mario"
             style="width: 100px; height: 100px; object-fit: cover"
             class="brazoDerecho"
           />
           <img
             v-show="partesVisibles.includes('brazoIzquierdo')"
-            src="/public/images/brazoIzquierdo.png"
+            src="../public/images/brazoIzquierdo.png"
             alt="Brazo Izquierdo de Mario"
             style="width: 100px; height: 100px; object-fit: cover"
             class="brazoIzquierdo"
           />
           <img
             v-show="partesVisibles.includes('piernaDerecha')"
-            src="/public/images/piernaDerechaa.png"
+            src="../public/images/piernaDerechaa.png"
             alt="Pierna Derecha de Mario"
             style="width: 160px; height: 150px; object-fit: cover"
             class="piernaDerecha"
           />
           <img
             v-show="partesVisibles.includes('piernaIzquierda')"
-            src="/public/images/piernaIzquierda.png"
+            src="../public/images/piernaIzquierda.png"
             alt="Pierna Izquierda de Mario"
             style="width: 160px; height: 150px; object-fit: cover"
             class="piernaIzquierda"
           />
           <img
             v-show="partesVisibles.includes('pieDerecho')"
-            src="/public/images/pieDerechoo.png"
+            src="../public/images/pieDerechoo.png"
             alt="Pie Derecho de Mario"
             style="width: 160px; height: 150px; object-fit: cover"
             class="pieDerecho"
           />
           <img
             v-show="partesVisibles.includes('pieIzquierdo')"
-            src="/public/images/pieIzquierdo.png"
+            src="../public/images/pieIzquierdo.png"
             alt="Pie Izquierdo de Mario"
             style="width: 160px; height: 150px; object-fit: cover"
             class="pieIzquierdo"
