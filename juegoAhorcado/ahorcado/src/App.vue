@@ -85,13 +85,13 @@
         <div class="contenedorAhorcado">
           <img
             v-show="partesVisibles.includes('cabeza')"
-            :src="cabezaMario"
+            src="./imgs/cabeza.png"
             alt="Cabeza de Mario"
             :class="['cabeza', {'muerto': juegoTerminado}]"
           />
           <img
             v-show="partesVisibles.includes('torso')"
-            src="./imgs/torsoMario.png"
+            src="./imgs/torso.png"
             alt="Torso de Mario"
             style="width: 90px; height: 90px; object-fit: cover"
             class="torso"
@@ -183,6 +183,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+
 
 let titulo = ref("Bienvenido Ahorcado");
 let nombreJugador = ref("");
@@ -346,7 +347,7 @@ const cabezaMario = computed(() => {
   if(juegoTerminado.value){
     return "./imgs/cabezaMarioMuerto.png";
   }
-  return "./imgs/cabezaMarioMuerto.png"
+  return "./imgs/cabezaMario.png"
 })
 
 // Mostrar palabra oculta
